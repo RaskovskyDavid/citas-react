@@ -1,13 +1,31 @@
 import {useState, useEffect, react} from 'react'
 import Error from './Error';
-const Formulario = ({pacientes,setPacientes}) => {
+import ErrorConChildren from './ErrorConChildren';
+const Formulario = ({pacientes,setPacientes, paciente, setPaciente}) => {
   const [nombre, setNombre] = useState('');
   const [propietario, setPropietario] = useState('');
   const [email, setEmail] = useState('');
   const [date, setDate] = useState('');
   const [sintomas, setSintomas] = useState('');
   const [error, setError] = useState(false);
-  
+
+  useEffect(()=> {
+    if(Object.keys(paciente).length > 0)
+    {
+      setNombre(paciente.nombre)
+      setPropietario(paciente.propietario)
+      setEmail(paciente.email)
+      setDate(paciente.date)
+      setSintomas(paciente.sintomas)
+    }
+    
+  }, [paciente])
+
+  const generarId= () => {
+    const random = Math.random().toString()
+    const fecha = Date.now().toString()
+    return random + fecha
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     // validacion del formulario
@@ -21,10 +39,27 @@ const Formulario = ({pacientes,setPacientes}) => {
       const objetoPaciente = {
         nombre, propietario, email, date, sintomas
       }
-      setPacientes([objetoPaciente, ...pacientes])
+      if(paciente.id)
+      {
+        //editando
+        objetoPaciente.id = paciente.id
+        const pacientesactualizados = pacientes.map(pacienteState => 
+          pacienteState.id=== paciente.id? objetoPaciente : pacienteState)
+        setPacientes(pacientesactualizados)
+        setPaciente({})
+      }
+      else
+      {
+        // nuevo registro
+        objetoPaciente.id = generarId()
+        setPacientes([objetoPaciente, ...pacientes])
+
+      }
+      
       // REINICIAR EL FORM
       setNombre('')
       setPropietario('')
+      setEmail('')
       setDate('')
       setSintomas('')
   }
@@ -36,7 +71,8 @@ const Formulario = ({pacientes,setPacientes}) => {
         <span className="text-indigo-600 font-bold">Administrarlos</span>
       </p>
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg py-10 px-5 mb-10">
-        {error && <Error mensaje={'Si hay un error'} />}
+        {error && <ErrorConChildren>Si hay un error</ErrorConChildren>}
+        {/* <Error mensaje={'Si hay un error'} /> */}
         <div className="mb-5">
           <label htmlFor="mascota" className="block text-gray-700 uppercase">Nombre Mascota</label>
           <input id="mascota" 

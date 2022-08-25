@@ -1,13 +1,35 @@
-import React from 'react'
+import {React} from 'react'
 import Paciente from './Paciente'
 
-const ListadoPacientes = () => {
+const ListadoPacientes = ({pacientes, setPaciente, eliminarPaciente}) => {
+  
   return (
-    <div className="md:w-1/2 lg:w-3/5 h-screen overflow-scroll">
-      <h2 className='textx-4xl font-bold uppercase text-indigo-800 mt-2'>Listado Pacientes</h2>
-      <p className="text-xl mt-5 mb-10 text-center"> Administra tus {''}
-      <span className="text-indigo-600 font-bold">Pacientes y Citas</span> </p>
-      <Paciente/>
+    <div className="md:w-1/2 lg:w-3/5 md:h-screen overflow-scroll">
+      {pacientes && pacientes.length ?(
+        <>
+        <h2 className='text-3xl font-black uppercase text-center mt-2'>Listado Pacientes</h2>
+        <p className="text-xl mt-5 mb-10 text-center"> Administra tus {''}
+        <span className="text-indigo-600 font-bold">Pacientes y Citas</span> </p>
+        {pacientes.map((paciente) => {
+            return(
+              <Paciente
+              key={paciente.id}
+              paciente={paciente}
+              setPaciente={setPaciente}
+              eliminarPaciente ={eliminarPaciente}
+              />
+            )
+          })}
+      </>
+      ) : (
+        <>
+        <h2 className='text-3xl font-black uppercase text-center mt-2'>No hay pacientes</h2>
+        <p className="text-xl mt-5 mb-10 text-center"> Comienza agregando pacientes {''}
+        <span className="text-indigo-600 font-bold">y aparecerán en este lugar</span> </p>
+        </>
+      )}
+      
+      
 
     </div>
         
